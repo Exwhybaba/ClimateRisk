@@ -2,9 +2,11 @@
 # coding: utf-8
 
 # In[1]:
+
+
 import pandas as pd
 import matplotlib.pyplot as plt
-
+#%matplotlib inline
 import seaborn as sb
 import numpy as np
 from datetime import datetime
@@ -36,88 +38,17 @@ from sklearn.metrics import confusion_matrix
 # In[2]:
 
 
-df = pd.read_csv('POWER_Point_Monthly_Timeseries_1990_2022_011d7022N_004d0414E_LST.csv', sep= ',')
+dfx = pd.read_csv('adjust_csv.csv')
+dfx
 
 
 # In[3]:
 
 
-df
-
-
-# In[4]:
-
-
-df2 = pd.read_csv('climate2.csv')
-df2
-
-
-# In[5]:
-
-
-df2.columns
-
-
-# In[6]:
-
-
-melted_df = pd.melt(df2, id_vars=['PARAMETER', 'YEAR'], var_name='MONTH', value_name='VALUE')
-
-melted_df = melted_df[melted_df['MONTH'].apply(lambda x:x != 'ANN')]
-melted_df['DATE'] = pd.to_datetime(melted_df['YEAR'].astype(str) + '-' + melted_df['MONTH'], format='%Y-%b')
-
-# Sort the DataFrame based on the 'DATE' column
-sorted_df = melted_df.sort_values(by='DATE')
-sorted_df
-
-
-# In[7]:
-
-
-sorted_df['PARAMETER'].unique()
-
-
-# In[8]:
-
-
-parameter_maps = {} 
-
-for param in sorted_df['PARAMETER'].unique():
-    parameter_maps[param + '_map'] = sorted_df[sorted_df['PARAMETER'] == param]
-
-# Concatenate all DataFrames vertically
-all_df = pd.concat([df.reset_index(drop=True) for df in parameter_maps.values()], axis=1)
-
-# Print the concatenated DataFrame
-all_df
-
-
-# In[9]:
-
-
-all_df.columns
-
-
-# In[10]:
-
-
-#all_df.to_csv('adjust_csv.csv')
-
-
-# In[11]:
-
-
-dfx = pd.read_csv('adjust_csv.csv')
-dfx
-
-
-# In[12]:
-
-
 dfx.columns
 
 
-# In[13]:
+# In[4]:
 
 
 column2Drop = ['Unnamed: 0','PARAMETER', 'PARAMETER.1', 'YEAR.1', 'MONTH.1',  'DATE.1', 'PARAMETER.2', 'YEAR.2',
@@ -126,20 +57,20 @@ column2Drop = ['Unnamed: 0','PARAMETER', 'PARAMETER.1', 'YEAR.1', 'MONTH.1',  'D
         'YEAR.7', 'MONTH.7', 'DATE.7', 'PARAMETER.8', 'YEAR.8', 'MONTH.8', 'DATE.8']
 
 
-# In[14]:
+# In[5]:
 
 
 dfx.drop(columns= column2Drop, inplace= True)
 dfx
 
 
-# In[15]:
+# In[6]:
 
 
 dfx.columns
 
 
-# In[16]:
+# In[7]:
 
 
 dfx = dfx[['DATE', 'YEAR', 'MONTH', 'Dew/Frost Point at 2 Meters (C)', 'Precipitation Corrected (mm/day)', 
@@ -151,31 +82,31 @@ dfx = dfx[['DATE', 'YEAR', 'MONTH', 'Dew/Frost Point at 2 Meters (C)', 'Precipit
 dfx
 
 
-# In[17]:
+# In[8]:
 
 
 dfx.describe().T
 
 
-# In[18]:
+# In[9]:
 
 
 dfx.columns
 
 
-# In[19]:
+# In[10]:
 
 
 dfx.info()
 
 
-# In[20]:
+# In[11]:
 
 
 dfn = dfx.copy()
 
 
-# In[21]:
+# In[12]:
 
 
 dfn['DATE'] = pd.to_datetime(dfn['DATE'])
@@ -183,13 +114,13 @@ dfn['YEAR'] = dfn['DATE'].dt.year
 dfn['MONTH'] = dfn['DATE'].dt.month
 
 
-# In[22]:
+# In[13]:
 
 
 dfn.set_index('DATE', inplace=True)
 
 
-# In[23]:
+# In[14]:
 
 
 dfn
@@ -197,7 +128,7 @@ dfn
 
 # ## Temperature Analysis
 
-# In[24]:
+# In[15]:
 
 
 fig = px.line(dfn, x= dfn.index, y='Temperature at 2 Meters (C)', 
@@ -208,7 +139,7 @@ fig.update_layout(width=1000, height=600)
 fig.show()
 
 
-# In[25]:
+# In[16]:
 
 
 fig = px.bar(dfn, x='MONTH', y='Temperature at 2 Meters (C)',
@@ -222,7 +153,7 @@ fig.show()
 
 # ## Precipitation Analysis 
 
-# In[26]:
+# In[17]:
 
 
 fig = px.line(dfn, x= dfn.index, y=' Precipitation Corrected Sum (mm)', 
@@ -233,7 +164,7 @@ fig.update_layout(width=1000, height=600)
 fig.show()
 
 
-# In[27]:
+# In[18]:
 
 
 plt.figure(figsize= (11,6))
@@ -245,7 +176,7 @@ plt.xlabel('Month', size = 14)
 plt.ylabel('Precipitation(mm)', size = 14);
 
 
-# In[28]:
+# In[19]:
 
 
 plt.figure(figsize= (11,6))
@@ -259,7 +190,7 @@ plt.ylabel('Rainfall Intensity(mm/day)', size = 14);
 
 # ## Dew/Frost Point 
 
-# In[29]:
+# In[20]:
 
 
 def plotFunc(df, x, y):
@@ -282,19 +213,19 @@ def plotFunc(df, x, y):
    
 
 
-# In[30]:
+# In[21]:
 
 
 plotFunc(dfn, x = 'MONTH', y = 'Dew/Frost Point at 2 Meters (C)')
 
 
-# In[31]:
+# In[22]:
 
 
 get_ipython().run_cell_magic('javascript', '', 'IPython.OutputArea.prototype._should_scroll = function(lines) {\n    return false;\n}\n')
 
 
-# In[32]:
+# In[23]:
 
 
 columns = ['Surface Pressure (kPa)', 'Wind Speed at 2 Meters (m/s)','Relative Humidity at 2 Meters (%)',
@@ -310,7 +241,7 @@ for column in columns:
 
 
 
-# In[33]:
+# In[24]:
 
 
 correlation_matrix = dfn.corr()
@@ -321,7 +252,7 @@ plt.title('Correlation Matrix', size = 16);
 
 # ## Wind Pattern
 
-# In[34]:
+# In[25]:
 
 
 fig_time_series = px.line(dfn, x= dfn.index, y=['Wind Speed at 2 Meters (m/s)', 'Wind Speed at 10 Meters (m/s)'],
@@ -344,13 +275,13 @@ plt.show()
 
 # ## Extreme Temperature
 
-# In[35]:
+# In[26]:
 
 
 dfx[dfx['Temperature at 2 Meters (C)'].apply(lambda x : x < 22)]
 
 
-# In[36]:
+# In[27]:
 
 
 cold = dfn[dfn['Temperature at 2 Meters (C)'].apply(lambda x : x < 22)]
@@ -367,7 +298,7 @@ plt.legend()
 plt.show()
 
 
-# In[37]:
+# In[28]:
 
 
 cold = dfn[dfn['Temperature at 2 Meters (C)'] < 22]
@@ -397,7 +328,7 @@ fig.show()
 
 # ## Anomalies
 
-# In[38]:
+# In[29]:
 
 
 # Analyze Temperature Anomalies
@@ -415,13 +346,13 @@ plt.legend()
 plt.show()
 
 
-# In[39]:
+# In[30]:
 
 
 dfn.columns
 
 
-# In[40]:
+# In[31]:
 
 
 # Analyze Humidity Anomalies
@@ -439,7 +370,7 @@ plt.legend()
 plt.show()
 
 
-# In[41]:
+# In[32]:
 
 
 # Analyze Humidity Anomalies
@@ -457,7 +388,7 @@ plt.legend()
 plt.show()
 
 
-# In[42]:
+# In[33]:
 
 
 # Analyze Precipitation Anomalies
@@ -475,7 +406,7 @@ plt.legend()
 plt.show()
 
 
-# In[43]:
+# In[34]:
 
 
 # Analyze Rain_Intensity Anomalies
@@ -495,7 +426,7 @@ plt.show()
 
 # ## Climate Trends over Year
 
-# In[44]:
+# In[35]:
 
 
 # Group data by year to analyze climate trends
@@ -514,7 +445,7 @@ plt.legend()
 plt.show()
 
 
-# In[45]:
+# In[36]:
 
 
 plt.figure(figsize=(12, 6))
@@ -527,7 +458,7 @@ plt.legend()
 plt.show()
 
 
-# In[46]:
+# In[37]:
 
 
 plt.figure(figsize=(12, 6))
@@ -540,7 +471,7 @@ plt.legend()
 plt.show()
 
 
-# In[47]:
+# In[38]:
 
 
 plt.figure(figsize=(12, 6))
@@ -554,7 +485,7 @@ plt.show()
 
 # ## Relationship between temperature and precipitation
 
-# In[48]:
+# In[39]:
 
 
 sb.scatterplot(data= dfn, x= 'Temperature at 2 Meters (C)', y =' Precipitation Corrected Sum (mm)')
@@ -566,7 +497,7 @@ plt.xlabel('Temperature')
 
 # ## Flooding Condition
 
-# In[49]:
+# In[40]:
 
 
 # Plotting the relationship between Precipitation Corrected and Surface Pressure
@@ -576,7 +507,7 @@ plt.ylabel('Precipitation')
 plt.xlabel('Surface Pressure (kPa)')
 
 
-# In[50]:
+# In[41]:
 
 
 threshold_precipitation =  200
@@ -592,7 +523,7 @@ plt.ylabel('Precipitation')
 plt.xlabel('Surface Pressure')
 
 
-# In[51]:
+# In[42]:
 
 
 plt.scatter(y = dfn['Precipitation Corrected (mm/day)'], x = dfn['Surface Pressure (kPa)'])
@@ -601,7 +532,7 @@ plt.ylabel('Rainfall Intensity')
 plt.xlabel('Surface Pressure (kPa)')
 
 
-# In[52]:
+# In[43]:
 
 
 low_Precipitation = dfn[dfn[' Precipitation Corrected Sum (mm)'] < 50]
@@ -626,7 +557,7 @@ fig.show()
 
 # ## Drought Condition
 
-# In[53]:
+# In[44]:
 
 
 plt.scatter(y = dfn['Relative Humidity at 2 Meters (%)'], x = dfn['Temperature at 2 Meters (C)'])
@@ -635,13 +566,13 @@ plt.ylabel('Relative Humidity')
 plt.xlabel('Temperature');
 
 
-# In[54]:
+# In[45]:
 
 
 dfn['Relative Humidity at 2 Meters (%)'].corr(dfn['Temperature at 2 Meters (C)'])
 
 
-# In[55]:
+# In[46]:
 
 
 low_relative = dfn[dfn['Relative Humidity at 2 Meters (%)'] < 30]
@@ -664,7 +595,7 @@ fig.update_layout(
 fig.show()
 
 
-# In[56]:
+# In[47]:
 
 
 plt.figure(figsize= (11,6))
@@ -676,7 +607,7 @@ plt.xlabel('Month', size = 14)
 plt.ylabel('Relative Humidity(%)', size = 14);
 
 
-# In[57]:
+# In[48]:
 
 
 dfn['Precipitation Corrected (mm/day)'].min()
@@ -685,13 +616,13 @@ dfn['Precipitation Corrected (mm/day)'].min()
 # High rainfall intensity: 5 mm/day or more
 # Low rainfall intensity: 3 mm/day or less  
 
-# In[58]:
+# In[49]:
 
 
 ''
 
 
-# In[59]:
+# In[50]:
 
 
 #mapping flood condition
@@ -705,7 +636,7 @@ drought = (dfn['Precipitation Corrected (mm/day)'] <= 3) & \
                     (dfn['Relative Humidity at 2 Meters (%)'] <= 30)
 
 
-# In[60]:
+# In[51]:
 
 
 dfn['class'] = 'normal'
@@ -714,7 +645,7 @@ dfn.loc[drought, 'class'] = 'drought'
 dfn
 
 
-# In[61]:
+# In[52]:
 
 
 dfn.groupby('class').size()
@@ -724,13 +655,13 @@ dfn.groupby('class').size()
 # 
 # ## Predicting flood Model
 
-# In[62]:
+# In[53]:
 
 
 dfn.describe().T
 
 
-# In[63]:
+# In[54]:
 
 
 plt.figure(figsize=(25, 20), dpi= 100)
@@ -740,7 +671,7 @@ plt.tight_layout()
 plt.show();
 
 
-# In[64]:
+# In[55]:
 
 
 plt.figure(figsize=(25, 20), dpi= 100)
@@ -750,7 +681,7 @@ plt.tight_layout()
 plt.show();
 
 
-# In[65]:
+# In[56]:
 
 
 features = [f for f in dfn.columns if f != 'class']
@@ -758,59 +689,59 @@ target = [t for t in dfn.columns if t == 'class']
 
 
 
-# In[66]:
+# In[57]:
 
 
 dfn.groupby('class').size()
 
 
-# In[67]:
+# In[58]:
 
 
 feature_df = dfn[features]
 label_df = dfn[target]
 
 
-# In[68]:
+# In[59]:
 
 
 dfn.columns.get_loc('class') 
 
 
-# In[69]:
+# In[60]:
 
 
 oversample = SMOTENC(sampling_strategy='auto', categorical_features=[0])
 tfrm_features, tfrm_target = oversample.fit_resample(feature_df, label_df)
 
 
-# In[70]:
+# In[61]:
 
 
 print(f'new label count: {tfrm_target.value_counts()}')
 print(f'old label count: {label_df.value_counts()}')
 
 
-# In[71]:
+# In[62]:
 
 
 dfi = pd.concat([tfrm_features,tfrm_target],axis=1, join='outer')
 dfi
 
 
-# In[72]:
+# In[63]:
 
 
 dfi.groupby('class').size()
 
 
-# In[118]:
+# In[64]:
 
 
 dfi.columns
 
 
-# In[73]:
+# In[65]:
 
 
 X = dfi[features].values
@@ -819,13 +750,13 @@ y = dfi[target].values
 
 # ## Preprocessing
 
-# In[74]:
+# In[66]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.2, random_state=7)
 
 
-# In[75]:
+# In[67]:
 
 
 #Encoding categorical data
@@ -834,14 +765,14 @@ y_train = encoder.transform(y_train)
 y_test = encoder.transform(y_test)
 
 
-# In[76]:
+# In[68]:
 
 
 X_train_df = pd.DataFrame(X_train, columns = features)
 X_train_df.describe().T
 
 
-# In[77]:
+# In[69]:
 
 
 X_test_df = pd.DataFrame(X_test, columns = features)
@@ -849,19 +780,19 @@ y_train_df = pd.DataFrame(y_train, columns = target)
 y_test_df = pd.DataFrame(y_test, columns = target)
 
 
-# In[78]:
+# In[70]:
 
 
 y_train_df.value_counts()
 
 
-# In[79]:
+# In[71]:
 
 
 y_test_df.value_counts()
 
 
-# In[80]:
+# In[72]:
 
 
 #Rescaling
@@ -870,14 +801,14 @@ RX_train = scaler.transform(X_train)
 RX_test = scaler.transform(X_test)
 
 
-# In[81]:
+# In[73]:
 
 
 RX_train_df = pd.DataFrame(RX_train, columns = features)
 RX_train_df.describe().T
 
 
-# In[82]:
+# In[74]:
 
 
 #Normalization
@@ -886,21 +817,21 @@ NRX_train = scaler.transform(RX_train)
 NRX_test = scaler.transform(RX_test)
 
 
-# In[83]:
+# In[75]:
 
 
 NRX_train_df = pd.DataFrame(NRX_train, columns = features)
 NRX_train_df.describe().T
 
 
-# In[84]:
+# In[76]:
 
 
 NRX_test_df = pd.DataFrame(NRX_test, columns = features)
 NRX_test_df.describe().T
 
 
-# In[85]:
+# In[77]:
 
 
 plt.figure(figsize=(25, 20), dpi= 100)
@@ -912,13 +843,13 @@ plt.show();
 
 # ## Multicolinearity
 
-# In[86]:
+# In[78]:
 
 
 NRX_train_df['class'] = y_train
 
 
-# In[87]:
+# In[79]:
 
 
 corr = NRX_train_df.corr()
@@ -926,26 +857,26 @@ plt.figure(figsize=(35, 15))
 sb.heatmap(corr, annot=True, cmap="YlGnBu", vmin=-1, vmax=1, fmt=".2f", mask=np.triu(np.ones_like(corr, dtype=bool)))
 
 
-# In[88]:
+# In[80]:
 
 
 dfi.columns
 
 
-# In[89]:
+# In[81]:
 
 
 column2Drop = ['Precipitation Corrected (mm/day)', 'Specific Humidity at 2 Meters (g/kg)', 
                'Dew/Frost Point at 2 Meters (C)', 'Wind Speed at 10 Meters (m/s)','Relative Humidity at 2 Meters (%)']
 
 
-# In[90]:
+# In[82]:
 
 
 NRX_train_df.drop(columns = column2Drop, inplace= True)
 
 
-# In[91]:
+# In[83]:
 
 
 corr = NRX_train_df.corr()
@@ -953,19 +884,19 @@ plt.figure(figsize=(35, 15))
 sb.heatmap(corr, annot=True, cmap="YlGnBu", vmin=-1, vmax=1, fmt=".2f", mask=np.triu(np.ones_like(corr, dtype=bool)))
 
 
-# In[92]:
+# In[84]:
 
 
 NRX_train_df.drop(columns = ['class'], inplace= True)
 
 
-# In[93]:
+# In[85]:
 
 
 NRX_train_df.shape
 
 
-# In[94]:
+# In[86]:
 
 
 from sklearn.feature_selection import RFE
@@ -978,27 +909,27 @@ print(fit.support_)
 print(fit.ranking_)
 
 
-# In[95]:
+# In[87]:
 
 
 RFE_ = [name for name, value in zip(NRX_train_df.columns, fit.ranking_) if value == 1]
 len(RFE_)
 
 
-# In[96]:
+# In[88]:
 
 
 RFE_
 
 
-# In[97]:
+# In[89]:
 
 
 X_train = NRX_train_df[RFE_].values
 X_test = NRX_test_df[RFE_].values
 
 
-# In[98]:
+# In[90]:
 
 
 # Spot-Check Classifier Algorithms
@@ -1023,7 +954,7 @@ for name, model in models:
     print(msg)
 
 
-# In[99]:
+# In[91]:
 
 
 # Compare Algorithms
@@ -1035,7 +966,7 @@ ax.set_xticklabels(names)
 plt.show()
 
 
-# In[100]:
+# In[92]:
 
 
 model = KNeighborsClassifier()
@@ -1043,7 +974,7 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)
 
 
-# In[101]:
+# In[93]:
 
 
 # Evaluate the model and print the results
@@ -1051,14 +982,14 @@ print(classification_report(y_test, predictions))
 print('F1-score: ', f1_score(y_test, predictions, average='micro'))
 
 
-# In[102]:
+# In[94]:
 
 
 cm = confusion_matrix(y_test, predictions)
 cm
 
 
-# In[103]:
+# In[95]:
 
 
 def make_prediction(Precipitation, RelativeHumidity):
@@ -1080,33 +1011,33 @@ def make_prediction(Precipitation, RelativeHumidity):
  
 
 
-# In[104]:
+# In[96]:
 
 
 make_prediction(0, 40)
 
 
-# In[105]:
+# In[97]:
 
 
 a_df = dfi[[' Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)', 'class']]
 a_df
 
 
-# In[106]:
+# In[98]:
 
 
 a_df['predict'] = encoder.inverse_transform(model.predict(
     a_df[[' Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)']]))
 
 
-# In[107]:
+# In[99]:
 
 
 a_df[a_df['class'].apply(lambda x : x == 'flood')].head(60)
 
 
-# In[108]:
+# In[100]:
 
 
 predictions
@@ -1114,7 +1045,7 @@ predictions
 
 # # Flood Prone Areas
 
-# In[109]:
+# In[101]:
 
 
 data = {
@@ -1132,31 +1063,31 @@ df2 = pd.DataFrame(data)
 
 
 
-# In[110]:
+# In[102]:
 
 
 df2
 
 
-# In[111]:
+# In[103]:
 
 
 map_center = [df2['Latitude'].mean(), df2['Longitude'].mean()]
 
 
-# In[112]:
+# In[104]:
 
 
 kebbi_map = folium.Map(location=map_center, zoom_start=10)
 
 
-# In[113]:
+# In[105]:
 
 
 kebbi_map
 
 
-# In[114]:
+# In[106]:
 
 
 for index, row in df2.iterrows():
@@ -1167,14 +1098,14 @@ for index, row in df2.iterrows():
     ).add_to(kebbi_map)
 
 
-# In[115]:
+# In[107]:
 
 
 #kebbi_map.save('kebbi_elevation_map.html')
 kebbi_map
 
 
-# In[116]:
+# In[108]:
 
 
 df2['Settlement'].unique()
