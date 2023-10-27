@@ -397,7 +397,7 @@ plt.show()
 
 # Analyze Precipitation Anomalies
 mean_Precipitation = dfn['Precipitation Corrected Sum (mm)'].mean()
-Precipitation_anomalies = dfn[' Precipitation Corrected Sum (mm)'] - mean_Precipitation
+Precipitation_anomalies = dfn['Precipitation Corrected Sum (mm)'] - mean_Precipitation
 
 # Visualize Humidity Anomalies
 plt.figure(figsize=(12, 6))
@@ -492,7 +492,7 @@ plt.show()
 # In[39]:
 
 
-sb.scatterplot(data= dfn, x= 'Temperature at 2 Meters (C)', y =' Precipitation Corrected Sum (mm)')
+sb.scatterplot(data= dfn, x= 'Temperature at 2 Meters (C)', y ='Precipitation Corrected Sum (mm)')
 print(dfn['Temperature at 2 Meters (C)'].corr(dfn['Precipitation Corrected Sum (mm)']))
 plt.title('Relationship between Precipitation and Temperature')
 plt.ylabel('Precipitation')
