@@ -2,11 +2,9 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+
 import seaborn as sb
 import numpy as np
 from datetime import datetime
