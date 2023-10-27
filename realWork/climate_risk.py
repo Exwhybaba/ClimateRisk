@@ -36,9 +36,9 @@ from sklearn.metrics import confusion_matrix
 
 
 # In[2]:
+path = r'https://github.com/Exwhybaba/ClimateRisk/blob/main/realWork/adjust_csv.csv'
 
-
-dfx = pd.read_csv('adjust_csv.csv')
+dfx = pd.read_csv(path)
 dfx
 
 
