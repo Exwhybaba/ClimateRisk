@@ -6,6 +6,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 #%matplotlib inline
 import seaborn as sb
 import numpy as np
