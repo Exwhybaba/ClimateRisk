@@ -78,7 +78,7 @@ dfx.columns
 
 
 dfx = dfx[['DATE', 'YEAR', 'MONTH', 'Dew/Frost Point at 2 Meters (C)', 'Precipitation Corrected (mm/day)', 
-           ' Precipitation Corrected Sum (mm)',
+           'Precipitation Corrected Sum (mm)',
            'Surface Pressure (kPa)', 'Wind Speed at 2 Meters (m/s)',
        'Relative Humidity at 2 Meters (%)',
        'Specific Humidity at 2 Meters (g/kg)', 'Temperature at 2 Meters (C)',
