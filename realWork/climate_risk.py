@@ -65,6 +65,8 @@ column2Drop = ['Unnamed: 0','PARAMETER', 'PARAMETER.1', 'YEAR.1', 'MONTH.1',  'D
 dfx.drop(columns= column2Drop, inplace= True)
 dfx
 
+dfx.rename(columns={' Precipitation Corrected Sum (mm)': 'Precipitation Corrected Sum (mm)'}, inplace=True)
+ 
 
 # In[6]:
 
@@ -158,8 +160,8 @@ fig.show()
 # In[17]:
 
 
-fig = px.line(dfn, x= dfn.index, y=' Precipitation Corrected Sum (mm)', 
-              labels={' Precipitation Corrected Sum (mm)':'Precipitation(mm)'}, 
+fig = px.line(dfn, x= dfn.index, y='Precipitation Corrected Sum (mm)', 
+              labels={'Precipitation Corrected Sum (mm)':'Precipitation(mm)'}, 
               title='Precipitation Trends')
 fig.update_traces(mode='markers+lines', marker=dict(size=8))
 fig.update_layout(width=1000, height=600)
@@ -172,7 +174,7 @@ fig.show()
 plt.figure(figsize= (11,6))
 plt.style.use('seaborn-darkgrid')
 color = sb.color_palette()[0]
-sb.barplot(dfn, x='MONTH', y=' Precipitation Corrected Sum (mm)', color= color, errorbar=None);
+sb.barplot(dfn, x='MONTH', y='Precipitation Corrected Sum (mm)', color= color, errorbar=None);
 plt.title('Average Monthly Precipitation', size = 16)
 plt.xlabel('Month', size = 14)
 plt.ylabel('Precipitation(mm)', size = 14);
@@ -394,7 +396,7 @@ plt.show()
 
 
 # Analyze Precipitation Anomalies
-mean_Precipitation = dfn[' Precipitation Corrected Sum (mm)'].mean()
+mean_Precipitation = dfn['Precipitation Corrected Sum (mm)'].mean()
 Precipitation_anomalies = dfn[' Precipitation Corrected Sum (mm)'] - mean_Precipitation
 
 # Visualize Humidity Anomalies
@@ -477,7 +479,7 @@ plt.show()
 
 
 plt.figure(figsize=(12, 6))
-plt.plot(grouped_by_year.index, grouped_by_year[' Precipitation Corrected Sum (mm)'], marker='o', label='Mean Precipitation')
+plt.plot(grouped_by_year.index, grouped_by_year['Precipitation Corrected Sum (mm)'], marker='o', label='Mean Precipitation')
 plt.title('Climate Trends - Precipitation over Time')
 plt.xlabel('Year')
 plt.ylabel('Mean Precipitation (mm/day)')
@@ -491,7 +493,7 @@ plt.show()
 
 
 sb.scatterplot(data= dfn, x= 'Temperature at 2 Meters (C)', y =' Precipitation Corrected Sum (mm)')
-print(dfn['Temperature at 2 Meters (C)'].corr(dfn[' Precipitation Corrected Sum (mm)']))
+print(dfn['Temperature at 2 Meters (C)'].corr(dfn['Precipitation Corrected Sum (mm)']))
 plt.title('Relationship between Precipitation and Temperature')
 plt.ylabel('Precipitation')
 plt.xlabel('Temperature')
@@ -503,7 +505,7 @@ plt.xlabel('Temperature')
 
 
 # Plotting the relationship between Precipitation Corrected and Surface Pressure
-plt.scatter(y = dfn[' Precipitation Corrected Sum (mm)'], x = dfn['Surface Pressure (kPa)'])
+plt.scatter(y = dfn['Precipitation Corrected Sum (mm)'], x = dfn['Surface Pressure (kPa)'])
 plt.title('Relationship between Precipitation and Surface Pressure')
 plt.ylabel('Precipitation')
 plt.xlabel('Surface Pressure (kPa)')
@@ -513,11 +515,11 @@ plt.xlabel('Surface Pressure (kPa)')
 
 
 threshold_precipitation =  200
-high_precipitation_events = dfn[dfn[' Precipitation Corrected Sum (mm)'] > threshold_precipitation]
+high_precipitation_events = dfn[dfn['Precipitation Corrected Sum (mm)'] > threshold_precipitation]
 
 # Plotting instances of high precipitation
-plt.scatter( y = dfn[' Precipitation Corrected Sum (mm)'], x = dfn['Surface Pressure (kPa)'], label='Normal')
-plt.scatter(y = high_precipitation_events[' Precipitation Corrected Sum (mm)'], 
+plt.scatter( y = dfn['Precipitation Corrected Sum (mm)'], x = dfn['Surface Pressure (kPa)'], label='Normal')
+plt.scatter(y = high_precipitation_events['Precipitation Corrected Sum (mm)'], 
             x = high_precipitation_events['Surface Pressure (kPa)'],
             color='red', label='High Precipitation Events')
 plt.title('Instances of High Precipitation and Surface Pressure')
@@ -537,15 +539,15 @@ plt.xlabel('Surface Pressure (kPa)')
 # In[43]:
 
 
-low_Precipitation = dfn[dfn[' Precipitation Corrected Sum (mm)'] < 50]
-high_Precipitation = dfn[dfn[' Precipitation Corrected Sum (mm)'] > 200]
+low_Precipitation = dfn[dfn['Precipitation Corrected Sum (mm)'] < 50]
+high_Precipitation = dfn[dfn['Precipitation Corrected Sum (mm)'] > 200]
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=dfn.index, y=dfn[' Precipitation Corrected Sum (mm)'], mode='lines', name='All Data'))
+fig.add_trace(go.Scatter(x=dfn.index, y=dfn['Precipitation Corrected Sum (mm)'], mode='lines', name='All Data'))
 # Scatter plot for low relative humidity
-fig.add_trace(go.Scatter(x=low_Precipitation.index, y=low_Precipitation[' Precipitation Corrected Sum (mm)'],
+fig.add_trace(go.Scatter(x=low_Precipitation.index, y=low_Precipitation['Precipitation Corrected Sum (mm)'],
                          mode='markers', marker=dict(color='blue'), name='low Precipitation'))
 # Scatter plot for high relative humidity
-fig.add_trace(go.Scatter(x=high_Precipitation.index, y=high_Precipitation[' Precipitation Corrected Sum (mm)'],
+fig.add_trace(go.Scatter(x=high_Precipitation.index, y=high_Precipitation['Precipitation Corrected Sum (mm)'],
                          mode='markers', marker=dict(color='red'), name='high Precipitation'))
 fig.update_layout(
     title='Precipitation Events',
@@ -629,12 +631,12 @@ dfn['Precipitation Corrected (mm/day)'].min()
 
 #mapping flood condition
 flood = (dfn['Precipitation Corrected (mm/day)'] >= 5) & \
-                  (dfn[' Precipitation Corrected Sum (mm)'] >= 200) & \
+                  (dfn['Precipitation Corrected Sum (mm)'] >= 200) & \
                   (dfn['Relative Humidity at 2 Meters (%)'] >= 60)
 
 # mapping drought condition
 drought = (dfn['Precipitation Corrected (mm/day)'] <= 3) & \
-                    (dfn[' Precipitation Corrected Sum (mm)'] <= 50) & \
+                    (dfn['Precipitation Corrected Sum (mm)'] <= 50) & \
                     (dfn['Relative Humidity at 2 Meters (%)'] <= 30)
 
 
@@ -996,7 +998,7 @@ cm
 
 def make_prediction(Precipitation, RelativeHumidity):
     data = {
-        ' Precipitation Corrected Sum (mm)': Precipitation,
+        'Precipitation Corrected Sum (mm)': Precipitation,
         'Relative Humidity at 2 Meters (%)': RelativeHumidity,
     }
     
@@ -1022,7 +1024,7 @@ make_prediction(0, 40)
 # In[97]:
 
 
-a_df = dfi[[' Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)', 'class']]
+a_df = dfi[['Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)', 'class']]
 a_df
 
 
@@ -1030,7 +1032,7 @@ a_df
 
 
 a_df['predict'] = encoder.inverse_transform(model.predict(
-    a_df[[' Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)']]))
+    a_df[['Precipitation Corrected Sum (mm)', 'Relative Humidity at 2 Meters (%)']]))
 
 
 # In[99]:
